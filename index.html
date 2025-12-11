@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GMS CP - Director (Unlisted Link Support)</title>
+    <title>GMS CP - Director (Debug Mode)</title>
     <style>
         /* --- 1. RESET & VARIABLES --- */
         :root {
@@ -44,8 +44,6 @@
         }
         
         .brand { display: flex; flex-direction: column; }
-        
-        /* Font Desktop */
         h1 { font-size: 25px; margin: 0; font-weight: 700; text-transform: uppercase; }
         h1 span { color: var(--accent-blue); } 
         .subtitle { font-size: 20px; color: var(--text-muted); }
@@ -162,8 +160,7 @@
         /* DROPDOWN RESULTS YOUTUBE */
         .yt-results-dropdown {
             position: absolute; 
-            top: 55px; 
-            left: 0; right: 0;
+            top: 55px; left: 0; right: 0;
             background: #252830; 
             border: 1px solid #444;
             max-height: 250px; overflow-y: auto;
@@ -178,10 +175,8 @@
         .yt-result-item {
             display: flex; gap: 10px; padding: 8px;
             border-bottom: 1px solid #333;
-            cursor: pointer;
-            transition: background 0.2s;
+            cursor: pointer; transition: background 0.2s;
         }
-        .yt-result-item:last-child { border-bottom: none; }
         .yt-result-item:hover { background: #3b3f4d; }
         
         .yt-thumb { width: 60px; height: 45px; object-fit: cover; border-radius: 4px; flex-shrink: 0; background: #000; }
@@ -197,7 +192,6 @@
         .file-label:active { background-color: #333; transform: scale(0.98); }
         #global-media-input { display: none; }
 
-        /* EMBED BOXES */
         .embed-box {
             width: 100%; background: #000; border-radius: 6px; overflow: hidden;
             display: none; border: 1px solid #333; margin-top: 5px; position: relative; z-index: 1;
@@ -206,7 +200,6 @@
         
         #yt-embed-container.active { aspect-ratio: 16/9; }
         #sp-embed-container.active { height: 80px; }
-
 
         /* LOG TABLE */
         .log-container {
@@ -231,13 +224,10 @@
         #log-desktop { display: flex; }
         #log-mobile { display: none; }
 
-
         /* === PANEL KANAN (MULTIVIEW GRID) === */
         .right-panel {
             background-color: #15171b;
-            overflow-y: auto; 
-            padding: 15px;
-            width: 60%;
+            overflow-y: auto; padding: 15px; width: 60%;
         }
         .cam-group { margin-bottom: 20px; }
         .group-title {
@@ -251,9 +241,7 @@
             background: var(--accent-blue); border-radius: 50%; margin-right: 8px;
         }
         .feeds-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
-            gap: 10px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px;
         }
 
         /* CAM BOX STYLE */
@@ -266,9 +254,7 @@
         }
         @media (hover: hover) {
             .cam-box:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-                border-color: #444;
+                transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.4); border-color: #444;
             }
         }
         .cam-box:active { transform: scale(0.96); border-color: var(--accent-red); }
@@ -294,8 +280,7 @@
             position: absolute; bottom: 5px; left: 5px;
             font-size: 10px; font-weight: 800; color: #121418;
             background: #ffc107; width: 18px; height: 18px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 3px;
+            display: flex; align-items: center; justify-content: center; border-radius: 3px;
         }
         .cam-desc {
             position: absolute; bottom: 5px; right: 5px;
@@ -304,20 +289,16 @@
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .cam-box.active {
-            border: 3px solid var(--accent-red);
-            box-shadow: 0 0 15px rgba(255, 59, 59, 0.5);
-            transform: scale(1); 
+            border: 3px solid var(--accent-red); box-shadow: 0 0 15px rgba(255, 59, 59, 0.5); transform: scale(1); 
         }
         .cam-box.active .cam-id { background: var(--accent-red); color: white; }
 
-        
         /* === RESPONSIVE === */
         @media (max-width: 900px) {
             h1 { font-size: 12px !important; }
             .subtitle { font-size: 9px !important; margin-top: 2px; }
             .shortcuts-info { display: none !important; } 
         }
-
         @media (max-width: 500px) {
             .main-container { flex-direction: column; }
             .left-panel { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); padding: 10px; flex-shrink: 0; }
@@ -330,12 +311,8 @@
             .control-bar { padding: 8px; gap: 6px; }
             .group-title { margin-bottom: 6px; font-size: 10px;}
             .cam-group { margin-bottom: 15px; }
-
             #log-desktop { display: none; }
-            #log-mobile { 
-                display: flex; flex-direction: column; background: #15171b;
-                border-top: 1px solid var(--border-color); height: 180px; padding: 10px; flex-shrink: 0; 
-            }
+            #log-mobile { display: flex; flex-direction: column; background: #15171b; border-top: 1px solid var(--border-color); height: 180px; padding: 10px; flex-shrink: 0; }
         }
     </style>
 </head>
@@ -352,7 +329,6 @@
     </header>
 
     <div class="main-container">
-        
         <div class="left-panel">
             <div>
                 <div class="monitor-frame live" id="monitor-frame">
@@ -409,13 +385,7 @@
                 <div class="log-header">LOG SWITCHING</div>
                 <div class="log-box">
                     <table class="log-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 25%">TIME</th>
-                                <th style="width: 20%">CAM</th>
-                                <th>DETAIL</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th style="width: 25%">TIME</th><th style="width: 20%">CAM</th><th>DETAIL</th></tr></thead>
                         <tbody class="log-body-content"></tbody>
                     </table>
                 </div>
@@ -428,27 +398,18 @@
             <div class="log-header">LOG SWITCHING</div>
             <div class="log-box">
                 <table class="log-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 25%">TIME</th>
-                            <th style="width: 20%">CAM</th>
-                            <th>DETAIL</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th style="width: 25%">TIME</th><th style="width: 20%">CAM</th><th>DETAIL</th></tr></thead>
                     <tbody class="log-body-content"></tbody>
                 </table>
             </div>
         </div>
-
     </div>
 
     <audio id="audio-player" style="display:none;"></audio>
 
     <script>
-        /* --- CONFIGURATION --- */
         const YT_API_KEY = "AIzaSyABYJo1ph8tiRXzQV3L0AkzoH4jwOgW1Ww"; 
 
-        /* --- DATA PRESETS --- */
         const inputs = [
             { id: 1,  key: '1', cam: '1', desc: 'WL - Pan / Tilt / Zoom', group: 'CAM 1 & 2', url: 'https://lh3.googleusercontent.com/d/17pq1BAIglaGHXPBWWvwi2U4yq58DVIx7' },
             { id: 2,  key: '2', cam: '2', desc: 'Jemaat Wide - Pan right / left', group: 'CAM 1 & 2', url: 'https://lh3.googleusercontent.com/d/1gKmnEHA-hFiZqUHz_iDs5SDzOh79BvCA' },
@@ -467,17 +428,9 @@
             { id: 15, key: 'T', cam: '6', desc: 'Wide - Zoom in / out', group: 'CAM 6', url: 'https://lh3.googleusercontent.com/d/1y_WKl-D8Ea6enEjjN3LHVHymPg11ddNk' }
         ];
 
-        const hotkeyMap = {
-            '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '0': 10,
-            'q': 11, 'w': 12, 'e': 13, 'r': 14, 't': 15,
-            'Q': 11, 'W': 12, 'E': 13, 'R': 14, 'T': 15 
-        };
+        const hotkeyMap = { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '0': 10, 'q': 11, 'w': 12, 'e': 13, 'r': 14, 't': 15, 'Q': 11, 'W': 12, 'E': 13, 'R': 14, 'T': 15 };
 
-        let activeId = 1;
-        let isRunning = false;
-        let timerInterval = null;
-        let startTime = 0;
-        let globalMedia = null;
+        let activeId = 1, isRunning = false, timerInterval = null, startTime = 0, globalMedia = null;
 
         const progImg = document.getElementById('program-image');
         const progInfo = document.getElementById('program-info');
@@ -485,117 +438,68 @@
         const timeDisplay = document.getElementById('time-display');
         const audioPlayer = document.getElementById('audio-player');
         const mediaStatus = document.getElementById('media-status');
-        
         const ytSearchInput = document.getElementById('yt-search-input');
         const ytEmbed = document.getElementById('yt-embed-container');
         const ytList = document.getElementById('yt-results-list');
         const btnYtSearch = document.getElementById('btn-yt-search');
-        
         const spLinkInput = document.getElementById('sp-link-input');
         const spEmbed = document.getElementById('sp-embed-container');
-        
         const logBodies = document.querySelectorAll('.log-body-content');
 
-        function init() {
-            renderGrid();
-            cutToCamera(1, false); 
-        }
+        function init() { renderGrid(); cutToCamera(1, false); }
 
         function renderGrid() {
             feedsContainer.innerHTML = '';
             const groups = {};
-            inputs.forEach(item => {
-                if(!groups[item.group]) groups[item.group] = [];
-                groups[item.group].push(item);
-            });
+            inputs.forEach(item => { if(!groups[item.group]) groups[item.group] = []; groups[item.group].push(item); });
             for (const [gName, gItems] of Object.entries(groups)) {
-                const groupDiv = document.createElement('div');
-                groupDiv.className = 'cam-group';
-                const title = document.createElement('div');
-                title.className = 'group-title';
-                title.innerText = gName;
-                groupDiv.appendChild(title);
-                const grid = document.createElement('div');
-                grid.className = 'feeds-grid';
+                const groupDiv = document.createElement('div'); groupDiv.className = 'cam-group';
+                const title = document.createElement('div'); title.className = 'group-title'; title.innerText = gName; groupDiv.appendChild(title);
+                const grid = document.createElement('div'); grid.className = 'feeds-grid';
                 gItems.forEach(item => {
-                    const box = document.createElement('div');
-                    box.className = 'cam-box';
-                    box.id = `cam-${item.id}`;
+                    const box = document.createElement('div'); box.className = 'cam-box'; box.id = `cam-${item.id}`;
                     box.onclick = () => cutToCamera(item.id, true);
-                    box.innerHTML = `
-                        <img src="${item.url}" class="cam-img" onerror="this.src='https://placehold.co/320x180/2a2d36/FFF?text=No+Signal'">
-                        <div class="cam-overlay">
-                            <div class="cam-id">CAM ${item.cam}</div>
-                            <div class="hotkey-hint">${item.key}</div>
-                            <div class="cam-desc">${item.desc}</div>
-                        </div>
-                    `;
+                    box.innerHTML = `<img src="${item.url}" class="cam-img" onerror="this.src='https://placehold.co/320x180/2a2d36/FFF?text=No+Signal'"><div class="cam-overlay"><div class="cam-id">CAM ${item.cam}</div><div class="hotkey-hint">${item.key}</div><div class="cam-desc">${item.desc}</div></div>`;
                     grid.appendChild(box);
                 });
-                groupDiv.appendChild(grid);
-                feedsContainer.appendChild(groupDiv);
+                groupDiv.appendChild(grid); feedsContainer.appendChild(groupDiv);
             }
         }
 
         function cutToCamera(id, doLog = true) {
-            const item = inputs.find(i => i.id === id);
-            if (!item) return;
+            const item = inputs.find(i => i.id === id); if (!item) return;
             if (doLog && !isRunning) toggleTimer();
-
-            activeId = id;
-            progImg.src = item.url;
+            activeId = id; progImg.src = item.url;
             progInfo.innerHTML = `CAM ${item.cam} <span style="font-weight:400; opacity:0.3; font-size:12px; margin-left:5px;">${item.desc}</span>`;
-
             document.querySelectorAll('.cam-box').forEach(el => el.classList.remove('active'));
             const activeBox = document.getElementById(`cam-${id}`);
-            if (activeBox) {
-                activeBox.classList.add('active');
-                if (window.innerWidth > 768) {
-                    activeBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                }
-            }
-
+            if (activeBox) { activeBox.classList.add('active'); if (window.innerWidth > 768) activeBox.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
             if (doLog) {
                 const timeStr = timeDisplay.innerText;
                 logBodies.forEach(tbody => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `<td>${timeStr}</td><td>CAM ${item.cam}</td><td>${item.desc}</td>`;
-                    tbody.insertBefore(row, tbody.firstChild);
+                    const row = document.createElement('tr'); row.innerHTML = `<td>${timeStr}</td><td>CAM ${item.cam}</td><td>${item.desc}</td>`; tbody.insertBefore(row, tbody.firstChild);
                 });
             }
         }
 
-        /* --- 2. YOUTUBE SMART LOGIC (LINK OR SEARCH) --- */
-        
+        /* --- SMART HANDLER FOR YOUTUBE --- */
         function handleYoutubeInput() {
             const input = ytSearchInput.value.trim();
             if (!input) { alert("Ketik judul atau paste link!"); return; }
-
-            // Cek apakah input berupa link
             const videoId = extractVideoID(input);
-
-            if (videoId) {
-                // JIKA LINK -> Langsung Play (Hemat API)
-                playYoutubeVideo(videoId);
-            } else {
-                // JIKA JUDUL -> Search API
-                searchYoutubeAPI();
-            }
+            if (videoId) { ytList.style.display = 'none'; playYoutubeVideo(videoId); } else { searchYoutubeAPI(input); }
         }
 
-        // Regex canggih untuk deteksi segala jenis link YT (Short, Long, Embed)
         function extractVideoID(url) {
             const regExp = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
             const match = url.match(regExp);
             return (match && match[1]) ? match[1] : false;
         }
 
-        async function searchYoutubeAPI() {
-            const query = ytSearchInput.value;
+        async function searchYoutubeAPI(query) {
             spEmbed.classList.remove('active'); spEmbed.innerHTML = ''; 
             ytEmbed.classList.remove('active'); ytEmbed.innerHTML = '';
-            
-            // Indikator Loading
+            ytList.style.display = 'none';
             btnYtSearch.innerText = "...";
 
             const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${encodeURIComponent(query)}&key=${YT_API_KEY}&type=video`;
@@ -603,94 +507,69 @@
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-
                 btnYtSearch.innerText = "🔍";
 
+                if(data.error) {
+                    // Tampilkan Error API yang spesifik agar user tahu
+                    alert("Gagal Request API: " + data.error.message + "\n\nPastikan domain njel15.github.io sudah di-add di restriction dan kamu tidak buka lewat file://");
+                    return;
+                }
+
                 if (data.items && data.items.length > 0) {
-                    // Populate List
                     ytList.innerHTML = '';
                     data.items.forEach(item => {
                         const vidId = item.id.videoId;
                         const title = item.snippet.title;
                         const thumb = item.snippet.thumbnails.default.url;
                         const channel = item.snippet.channelTitle;
-
                         const itemDiv = document.createElement('div');
                         itemDiv.className = 'yt-result-item';
                         itemDiv.onclick = () => playYoutubeVideo(vidId);
-                        itemDiv.innerHTML = `
-                            <img src="${thumb}" class="yt-thumb">
-                            <div class="yt-info">
-                                <div class="yt-title">${title}</div>
-                                <div class="yt-channel">${channel}</div>
-                            </div>
-                        `;
+                        itemDiv.innerHTML = `<img src="${thumb}" class="yt-thumb"><div class="yt-info"><div class="yt-title">${title}</div><div class="yt-channel">${channel}</div></div>`;
                         ytList.appendChild(itemDiv);
                     });
-                    
                     ytList.style.display = 'block';
-                    
                 } else {
                     alert("Video tidak ditemukan.");
                 }
             } catch (error) {
                 console.error(error);
                 btnYtSearch.innerText = "🔍";
-                alert("Gagal koneksi. Cek API Key.");
+                alert("Terjadi kesalahan koneksi. Cek console browser.");
             }
         }
 
         function playYoutubeVideo(videoId) {
-            ytList.style.display = 'none'; // Sembunyikan list
+            ytList.style.display = 'none'; 
+            spEmbed.classList.remove('active'); spEmbed.innerHTML = '';
             ytEmbed.classList.add('active');
-            ytEmbed.innerHTML = `
-                <iframe width="100%" height="100%" 
-                src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
-                frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
-                </iframe>
-            `;
+            ytEmbed.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
         }
 
         function handleEnterYT(e) { if (e.key === 'Enter') handleYoutubeInput(); }
 
-
-        /* --- 3. SPOTIFY EMBED LOGIC --- */
+        /* --- SPOTIFY EMBED LOGIC --- */
         function playLinkSP() {
             const url = spLinkInput.value;
             let embedUrl = "";
             ytEmbed.classList.remove('active'); ytEmbed.innerHTML = ''; 
             ytList.style.display = 'none';
-
             if(url.includes('spotify.com')) {
-                let cleanUrl = url.split('?')[0];
-                let parts = cleanUrl.split('.com/');
-                if(parts[1]) {
-                    embedUrl = `https://open.spotify.com/embed/${parts[1]}`;
-                }
+                let cleanUrl = url.split('?')[0]; let parts = cleanUrl.split('.com/');
+                if(parts[1]) embedUrl = `https://open.spotify.com/embed/${parts[1]}`;
             }
-
             if(embedUrl) {
                 spEmbed.classList.add('active');
-                spEmbed.innerHTML = `
-                    <iframe style="border-radius:12px" src="${embedUrl}" 
-                    width="100%" height="80" frameBorder="0" allowfullscreen="" 
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
-                    </iframe>
-                `;
-            } else {
-                alert("Link Spotify tidak valid!");
-            }
+                spEmbed.innerHTML = `<iframe style="border-radius:12px" src="${embedUrl}" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+            } else { alert("Link Spotify tidak valid!"); }
         }
         function handleEnterSP(e) { if (e.key === 'Enter') playLinkSP(); }
-
 
         /* --- FILE HANDLER & TIMER --- */
         document.getElementById('global-media-input').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                globalMedia = file;
-                const url = URL.createObjectURL(file);
-                audioPlayer.src = url;
+                globalMedia = file; const url = URL.createObjectURL(file); audioPlayer.src = url;
                 document.querySelector('.file-label').innerText = "✅ " + file.name;
                 mediaStatus.innerText = "Audio siap. Tekan START / CUT CAM.";
                 mediaStatus.style.color = "var(--accent-green)";
@@ -703,15 +582,10 @@
         function toggleTimer() {
             const btn = document.querySelector('.btn-start');
             if (isRunning) {
-                isRunning = false;
-                clearInterval(timerInterval);
-                audioPlayer.pause();
-                btn.innerText = "RESUME";
-                btn.style.background = "linear-gradient(135deg, #ffc107, #dca000)"; 
-                btn.style.color = "#000";
+                isRunning = false; clearInterval(timerInterval); audioPlayer.pause();
+                btn.innerText = "RESUME"; btn.style.background = "linear-gradient(135deg, #ffc107, #dca000)"; btn.style.color = "#000";
             } else {
-                isRunning = true;
-                if (!startTime) startTime = Date.now();
+                isRunning = true; if (!startTime) startTime = Date.now();
                 if (globalMedia && !audioPlayer.ended) {
                     audioPlayer.play();
                     timerInterval = setInterval(() => {
@@ -719,38 +593,26 @@
                         if(audioPlayer.ended) toggleTimer();
                     }, 50);
                 } else {
-                    const offset = parseFloat(timeDisplay.innerText) * 1000;
-                    startTime = Date.now() - offset;
+                    const offset = parseFloat(timeDisplay.innerText) * 1000; startTime = Date.now() - offset;
                     timerInterval = setInterval(() => {
                         const elapsed = (Date.now() - startTime) / 1000;
                         timeDisplay.innerText = elapsed.toFixed(2);
                     }, 50);
                 }
-                btn.innerText = "PAUSE";
-                btn.style.background = "linear-gradient(135deg, #ff3b3b, #d92b2b)"; 
-                btn.style.color = "#fff";
+                btn.innerText = "PAUSE"; btn.style.background = "linear-gradient(135deg, #ff3b3b, #d92b2b)"; btn.style.color = "#fff";
             }
         }
 
         function resetSimulator() {
-            isRunning = false;
-            clearInterval(timerInterval);
-            startTime = 0;
-            timeDisplay.innerText = "0.00";
-            audioPlayer.pause();
-            audioPlayer.currentTime = 0;
-            const btn = document.querySelector('.btn-start');
-            btn.innerText = "START";
-            btn.style.background = "linear-gradient(135deg, #00d26a, #00b359)";
-            btn.style.color = "#fff";
-            logBodies.forEach(tbody => tbody.innerHTML = '');
-            cutToCamera(1, false);
+            isRunning = false; clearInterval(timerInterval); startTime = 0; timeDisplay.innerText = "0.00";
+            audioPlayer.pause(); audioPlayer.currentTime = 0;
+            const btn = document.querySelector('.btn-start'); btn.innerText = "START"; btn.style.background = "linear-gradient(135deg, #00d26a, #00b359)"; btn.style.color = "#fff";
+            logBodies.forEach(tbody => tbody.innerHTML = ''); cutToCamera(1, false);
         }
 
         document.addEventListener('keydown', (e) => {
             if (document.activeElement === ytSearchInput || document.activeElement === spLinkInput) return;
-            const key = e.key;
-            if (hotkeyMap[key]) cutToCamera(hotkeyMap[key], true);
+            const key = e.key; if (hotkeyMap[key]) cutToCamera(hotkeyMap[key], true);
             if (e.code === 'Space') { e.preventDefault(); toggleTimer(); }
         });
 
