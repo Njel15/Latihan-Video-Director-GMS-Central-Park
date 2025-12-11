@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GMS CP - Director (YT Selection)</title>
+    <title>GMS CP - Director (YT Dropdown Fix)</title>
     <style>
         /* --- 1. RESET & VARIABLES --- */
         :root {
@@ -142,13 +142,13 @@
         .media-section {
             display: flex; flex-direction: column; gap: 5px;
             border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 5px;
-            position: relative; /* Penting untuk dropdown absolute */
+            position: relative; /* Anchor point untuk dropdown absolute */
         }
         .media-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         
         .section-label { font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 3px; }
 
-        .input-group { display: flex; gap: 5px; position: relative; }
+        .input-group { display: flex; gap: 5px; position: relative; z-index: 2; }
         .search-input {
             flex: 1; background: #15171b; border: 1px solid #444; color: white;
             padding: 6px; border-radius: 4px; font-size: 11px;
@@ -159,28 +159,37 @@
         .btn-yt { background: #cc0000; }
         .btn-sp { background: #1DB954; color: black; }
 
-        /* DROPDOWN RESULTS YOUTUBE */
+        /* DROPDOWN RESULTS YOUTUBE - FIXED */
         .yt-results-dropdown {
-            position: absolute; top: 100%; left: 0; right: 0;
-            background: #1e2026;
-            border: 1px solid #333; border-top: none;
+            position: absolute; 
+            top: 55px; /* Jarak dari atas section */
+            left: 0; right: 0;
+            background: #252830; /* Warna background lebih terang dikit */
+            border: 1px solid #444;
             max-height: 250px; overflow-y: auto;
-            z-index: 50;
+            z-index: 9999; /* Pastikan di atas segalanya */
             display: none; /* Hidden by default */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            border-radius: 0 0 6px 6px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+            border-radius: 6px;
         }
+        
+        /* Style scrollbar dropdown */
+        .yt-results-dropdown::-webkit-scrollbar { width: 6px; }
+        .yt-results-dropdown::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
+
         .yt-result-item {
             display: flex; gap: 10px; padding: 8px;
             border-bottom: 1px solid #333;
             cursor: pointer;
             transition: background 0.2s;
         }
-        .yt-result-item:hover { background: #2a2d36; }
-        .yt-thumb { width: 60px; height: 45px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
-        .yt-info { display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
-        .yt-title { font-size: 11px; color: white; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .yt-channel { font-size: 9px; color: #888; }
+        .yt-result-item:last-child { border-bottom: none; }
+        .yt-result-item:hover { background: #3b3f4d; } /* Hover effect jelas */
+        
+        .yt-thumb { width: 60px; height: 45px; object-fit: cover; border-radius: 4px; flex-shrink: 0; background: #000; }
+        .yt-info { display: flex; flex-direction: column; justify-content: center; overflow: hidden; flex: 1; }
+        .yt-title { font-size: 11px; color: white; font-weight: 600; line-height: 1.2; margin-bottom: 2px; }
+        .yt-channel { font-size: 9px; color: #aaa; }
 
         .file-label {
             display: block; width: 100%; background: #2a2d36; color: #ccc;
@@ -193,7 +202,7 @@
         /* EMBED BOXES */
         .embed-box {
             width: 100%; background: #000; border-radius: 6px; overflow: hidden;
-            display: none; border: 1px solid #333; margin-top: 5px;
+            display: none; border: 1px solid #333; margin-top: 5px; position: relative; z-index: 1;
         }
         .embed-box.active { display: block; }
         
@@ -376,7 +385,7 @@
                     <div class="section-label">2. YOUTUBE (SEARCH JUDUL)</div>
                     <div class="input-group">
                         <input type="text" id="yt-search-input" class="search-input" placeholder="Ketik Judul Lagu & Enter..." onkeypress="handleEnterYT(event)">
-                        <button class="btn-icon btn-yt" onclick="searchYoutubeAPI()">🔍</button>
+                        <button id="btn-yt-search" class="btn-icon btn-yt" onclick="searchYoutubeAPI()">🔍</button>
                     </div>
                     
                     <div id="yt-results-list" class="yt-results-dropdown"></div>
@@ -482,6 +491,7 @@
         const ytSearchInput = document.getElementById('yt-search-input');
         const ytEmbed = document.getElementById('yt-embed-container');
         const ytList = document.getElementById('yt-results-list');
+        const btnYtSearch = document.getElementById('btn-yt-search');
         
         const spLinkInput = document.getElementById('sp-link-input');
         const spEmbed = document.getElementById('sp-embed-container');
@@ -562,19 +572,22 @@
             const query = ytSearchInput.value;
             spEmbed.classList.remove('active'); spEmbed.innerHTML = ''; 
             ytEmbed.classList.remove('active'); ytEmbed.innerHTML = '';
-            ytList.style.display = 'none';
+            
+            // Indikator Loading
+            btnYtSearch.innerText = "...";
 
-            if (!query) { alert("Ketik judul lagu dulu!"); return; }
+            if (!query) { alert("Ketik judul lagu dulu!"); btnYtSearch.innerText = "🔍"; return; }
 
-            // Ambil 5 hasil
             const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${encodeURIComponent(query)}&key=${YT_API_KEY}&type=video`;
 
             try {
                 const response = await fetch(url);
                 const data = await response.json();
 
+                btnYtSearch.innerText = "🔍";
+
                 if (data.items && data.items.length > 0) {
-                    // Tampilkan List
+                    // Populate List
                     ytList.innerHTML = '';
                     data.items.forEach(item => {
                         const vidId = item.id.videoId;
@@ -594,18 +607,22 @@
                         `;
                         ytList.appendChild(itemDiv);
                     });
+                    
+                    // SHOW DROPDOWN (PENTING!)
                     ytList.style.display = 'block';
+                    
                 } else {
                     alert("Video tidak ditemukan.");
                 }
             } catch (error) {
                 console.error(error);
-                alert("Gagal koneksi ke YouTube. Cek API Key.");
+                btnYtSearch.innerText = "🔍";
+                alert("Gagal koneksi. Cek Console.");
             }
         }
 
         function playYoutubeVideo(videoId) {
-            ytList.style.display = 'none'; // Sembunyikan list
+            ytList.style.display = 'none'; // Sembunyikan list setelah pilih
             ytEmbed.classList.add('active');
             ytEmbed.innerHTML = `
                 <iframe width="100%" height="100%" 
