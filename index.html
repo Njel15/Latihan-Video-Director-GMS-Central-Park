@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GMS CP - Director (Live Link Support)</title>
+    <title>GMS CP - Director (Layout Fixed)</title>
     <style>
         /* --- 1. RESET & VARIABLES --- */
         :root {
@@ -88,6 +88,9 @@
             border-radius: 8px;
             overflow: hidden;
             transition: border-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+            
+            /* --- JARAK DARI ATAS DITAMBAH DISINI --- */
+            margin-top: 20px; 
         }
         .monitor-frame.live { border-color: var(--accent-red); box-shadow: 0 0 20px rgba(255, 59, 59, 0.4); }
         #program-image { width: 100%; height: 100%; object-fit: cover; }
@@ -380,7 +383,7 @@
                 </div>
 
                 <div class="media-section">
-                    <div class="section-label">2. YOUTUBE (PASTE LINK UNLISTED / KETIK JUDUL)</div>
+                    <div class="section-label">2. YOUTUBE (PASTE LINK / KETIK JUDUL)</div>
                     <div class="input-group">
                         <input type="text" id="yt-search-input" class="search-input" placeholder="Paste Link / Ketik Judul & Enter..." onkeypress="handleEnterYT(event)">
                         <button id="btn-yt-search" class="btn-icon btn-yt" onclick="handleYoutubeInput()">🔍</button>
