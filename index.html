@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GMS CP - Director (API Version)</title>
+    <title>GMS CP - Director (YT Selection)</title>
     <style>
         /* --- 1. RESET & VARIABLES --- */
         :root {
@@ -138,16 +138,17 @@
         .btn-start { background: linear-gradient(135deg, #00d26a, #00b359); }
         .btn-reset { background: linear-gradient(135deg, #ff3b3b, #d92b2b); }
         
-        /* --- MEDIA INPUT STYLES (3 BALES) --- */
+        /* --- MEDIA INPUT STYLES --- */
         .media-section {
             display: flex; flex-direction: column; gap: 5px;
             border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 5px;
+            position: relative; /* Penting untuk dropdown absolute */
         }
         .media-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         
         .section-label { font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 3px; }
 
-        .input-group { display: flex; gap: 5px; }
+        .input-group { display: flex; gap: 5px; position: relative; }
         .search-input {
             flex: 1; background: #15171b; border: 1px solid #444; color: white;
             padding: 6px; border-radius: 4px; font-size: 11px;
@@ -157,6 +158,29 @@
         .btn-icon { flex: 0 0 35px; display: flex; align-items: center; justify-content: center; background: #444; color: white; border-radius: 4px; cursor: pointer; border: none; font-weight: bold;}
         .btn-yt { background: #cc0000; }
         .btn-sp { background: #1DB954; color: black; }
+
+        /* DROPDOWN RESULTS YOUTUBE */
+        .yt-results-dropdown {
+            position: absolute; top: 100%; left: 0; right: 0;
+            background: #1e2026;
+            border: 1px solid #333; border-top: none;
+            max-height: 250px; overflow-y: auto;
+            z-index: 50;
+            display: none; /* Hidden by default */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            border-radius: 0 0 6px 6px;
+        }
+        .yt-result-item {
+            display: flex; gap: 10px; padding: 8px;
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .yt-result-item:hover { background: #2a2d36; }
+        .yt-thumb { width: 60px; height: 45px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+        .yt-info { display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+        .yt-title { font-size: 11px; color: white; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .yt-channel { font-size: 9px; color: #888; }
 
         .file-label {
             display: block; width: 100%; background: #2a2d36; color: #ccc;
@@ -354,6 +378,9 @@
                         <input type="text" id="yt-search-input" class="search-input" placeholder="Ketik Judul Lagu & Enter..." onkeypress="handleEnterYT(event)">
                         <button class="btn-icon btn-yt" onclick="searchYoutubeAPI()">🔍</button>
                     </div>
+                    
+                    <div id="yt-results-list" class="yt-results-dropdown"></div>
+                    
                     <div id="yt-embed-container" class="embed-box"></div>
                 </div>
 
@@ -412,7 +439,6 @@
 
     <script>
         /* --- CONFIGURATION --- */
-        // API Key kamu sudah dimasukkan di sini
         const YT_API_KEY = "AIzaSyABYJo1ph8tiRXzQV3L0AkzoH4jwOgW1Ww"; 
 
         /* --- DATA PRESETS --- */
@@ -455,6 +481,7 @@
         
         const ytSearchInput = document.getElementById('yt-search-input');
         const ytEmbed = document.getElementById('yt-embed-container');
+        const ytList = document.getElementById('yt-results-list');
         
         const spLinkInput = document.getElementById('sp-link-input');
         const spEmbed = document.getElementById('sp-embed-container');
@@ -530,36 +557,64 @@
             }
         }
 
-        /* --- 2. YOUTUBE API SEARCH LOGIC --- */
+        /* --- 2. YOUTUBE API SEARCH & LIST LOGIC --- */
         async function searchYoutubeAPI() {
             const query = ytSearchInput.value;
-            spEmbed.classList.remove('active'); spEmbed.innerHTML = ''; // Matikan Spotify
+            spEmbed.classList.remove('active'); spEmbed.innerHTML = ''; 
+            ytEmbed.classList.remove('active'); ytEmbed.innerHTML = '';
+            ytList.style.display = 'none';
 
             if (!query) { alert("Ketik judul lagu dulu!"); return; }
 
-            const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${encodeURIComponent(query)}&key=${YT_API_KEY}&type=video&embeddable=true`;
+            // Ambil 5 hasil
+            const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${encodeURIComponent(query)}&key=${YT_API_KEY}&type=video`;
 
             try {
                 const response = await fetch(url);
                 const data = await response.json();
 
                 if (data.items && data.items.length > 0) {
-                    const videoId = data.items[0].id.videoId;
-                    ytEmbed.classList.add('active');
-                    ytEmbed.innerHTML = `
-                        <iframe width="100%" height="100%" 
-                        src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
-                        frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
-                        </iframe>
-                    `;
+                    // Tampilkan List
+                    ytList.innerHTML = '';
+                    data.items.forEach(item => {
+                        const vidId = item.id.videoId;
+                        const title = item.snippet.title;
+                        const thumb = item.snippet.thumbnails.default.url;
+                        const channel = item.snippet.channelTitle;
+
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'yt-result-item';
+                        itemDiv.onclick = () => playYoutubeVideo(vidId);
+                        itemDiv.innerHTML = `
+                            <img src="${thumb}" class="yt-thumb">
+                            <div class="yt-info">
+                                <div class="yt-title">${title}</div>
+                                <div class="yt-channel">${channel}</div>
+                            </div>
+                        `;
+                        ytList.appendChild(itemDiv);
+                    });
+                    ytList.style.display = 'block';
                 } else {
-                    alert("Video tidak ditemukan atau kuota API habis.");
+                    alert("Video tidak ditemukan.");
                 }
             } catch (error) {
                 console.error(error);
-                alert("Terjadi kesalahan saat mencari video.");
+                alert("Gagal koneksi ke YouTube. Cek API Key.");
             }
         }
+
+        function playYoutubeVideo(videoId) {
+            ytList.style.display = 'none'; // Sembunyikan list
+            ytEmbed.classList.add('active');
+            ytEmbed.innerHTML = `
+                <iframe width="100%" height="100%" 
+                src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+                </iframe>
+            `;
+        }
+
         function handleEnterYT(e) { if (e.key === 'Enter') searchYoutubeAPI(); }
 
 
@@ -567,9 +622,10 @@
         function playLinkSP() {
             const url = spLinkInput.value;
             let embedUrl = "";
-            ytEmbed.classList.remove('active'); ytEmbed.innerHTML = ''; // Matikan YT
+            ytEmbed.classList.remove('active'); ytEmbed.innerHTML = ''; 
+            ytList.style.display = 'none';
 
-            if(url.includes('open.spotify.com')) {
+            if(url.includes('spotify.com')) {
                 let cleanUrl = url.split('?')[0];
                 let parts = cleanUrl.split('.com/');
                 if(parts[1]) {
