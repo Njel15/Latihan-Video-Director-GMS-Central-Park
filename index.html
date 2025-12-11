@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GMS CP - Director (YT Dropdown Fix)</title>
+    <title>GMS CP - Director (Smart Search)</title>
     <style>
         /* --- 1. RESET & VARIABLES --- */
         :root {
@@ -142,7 +142,7 @@
         .media-section {
             display: flex; flex-direction: column; gap: 5px;
             border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 5px;
-            position: relative; /* Anchor point untuk dropdown absolute */
+            position: relative; 
         }
         .media-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         
@@ -159,21 +159,19 @@
         .btn-yt { background: #cc0000; }
         .btn-sp { background: #1DB954; color: black; }
 
-        /* DROPDOWN RESULTS YOUTUBE - FIXED */
+        /* DROPDOWN RESULTS YOUTUBE */
         .yt-results-dropdown {
             position: absolute; 
-            top: 55px; /* Jarak dari atas section */
+            top: 55px; 
             left: 0; right: 0;
-            background: #252830; /* Warna background lebih terang dikit */
+            background: #252830; 
             border: 1px solid #444;
             max-height: 250px; overflow-y: auto;
-            z-index: 9999; /* Pastikan di atas segalanya */
-            display: none; /* Hidden by default */
+            z-index: 9999; 
+            display: none; 
             box-shadow: 0 10px 20px rgba(0,0,0,0.8);
             border-radius: 6px;
         }
-        
-        /* Style scrollbar dropdown */
         .yt-results-dropdown::-webkit-scrollbar { width: 6px; }
         .yt-results-dropdown::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
 
@@ -184,7 +182,7 @@
             transition: background 0.2s;
         }
         .yt-result-item:last-child { border-bottom: none; }
-        .yt-result-item:hover { background: #3b3f4d; } /* Hover effect jelas */
+        .yt-result-item:hover { background: #3b3f4d; }
         
         .yt-thumb { width: 60px; height: 45px; object-fit: cover; border-radius: 4px; flex-shrink: 0; background: #000; }
         .yt-info { display: flex; flex-direction: column; justify-content: center; overflow: hidden; flex: 1; }
@@ -382,10 +380,10 @@
                 </div>
 
                 <div class="media-section">
-                    <div class="section-label">2. YOUTUBE (SEARCH JUDUL)</div>
+                    <div class="section-label">2. YOUTUBE (JUDUL / LINK)</div>
                     <div class="input-group">
-                        <input type="text" id="yt-search-input" class="search-input" placeholder="Ketik Judul Lagu & Enter..." onkeypress="handleEnterYT(event)">
-                        <button id="btn-yt-search" class="btn-icon btn-yt" onclick="searchYoutubeAPI()">🔍</button>
+                        <input type="text" id="yt-search-input" class="search-input" placeholder="Ketik Judul atau Paste Link..." onkeypress="handleEnterYT(event)">
+                        <button id="btn-yt-search" class="btn-icon btn-yt" onclick="handleYoutubeInput()">🔍</button>
                     </div>
                     
                     <div id="yt-results-list" class="yt-results-dropdown"></div>
@@ -567,27 +565,43 @@
             }
         }
 
-        /* --- 2. YOUTUBE API SEARCH & LIST LOGIC --- */
-        async function searchYoutubeAPI() {
-            const query = ytSearchInput.value;
+        /* --- SMART HANDLER FOR YOUTUBE (TITLE OR LINK) --- */
+        function handleYoutubeInput() {
+            const input = ytSearchInput.value.trim();
+            if (!input) { alert("Isi dulu judul atau linknya!"); return; }
+
+            const videoId = extractVideoID(input);
+
+            if (videoId) {
+                // IT'S A LINK -> PLAY DIRECTLY
+                ytList.style.display = 'none';
+                playYoutubeVideo(videoId);
+            } else {
+                // IT'S A TITLE -> SEARCH API
+                searchYoutubeAPI(input);
+            }
+        }
+
+        function extractVideoID(url) {
+            const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[7].length == 11) ? match[7] : false;
+        }
+
+        async function searchYoutubeAPI(query) {
             spEmbed.classList.remove('active'); spEmbed.innerHTML = ''; 
             ytEmbed.classList.remove('active'); ytEmbed.innerHTML = '';
-            
-            // Indikator Loading
+            ytList.style.display = 'none';
             btnYtSearch.innerText = "...";
-
-            if (!query) { alert("Ketik judul lagu dulu!"); btnYtSearch.innerText = "🔍"; return; }
 
             const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${encodeURIComponent(query)}&key=${YT_API_KEY}&type=video`;
 
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-
                 btnYtSearch.innerText = "🔍";
 
                 if (data.items && data.items.length > 0) {
-                    // Populate List
                     ytList.innerHTML = '';
                     data.items.forEach(item => {
                         const vidId = item.id.videoId;
@@ -607,22 +621,20 @@
                         `;
                         ytList.appendChild(itemDiv);
                     });
-                    
-                    // SHOW DROPDOWN (PENTING!)
                     ytList.style.display = 'block';
-                    
                 } else {
                     alert("Video tidak ditemukan.");
                 }
             } catch (error) {
                 console.error(error);
                 btnYtSearch.innerText = "🔍";
-                alert("Gagal koneksi. Cek Console.");
+                alert("Gagal koneksi. Cek API Key & Console.");
             }
         }
 
         function playYoutubeVideo(videoId) {
-            ytList.style.display = 'none'; // Sembunyikan list setelah pilih
+            ytList.style.display = 'none'; 
+            spEmbed.classList.remove('active'); spEmbed.innerHTML = ''; // Matikan Spotify
             ytEmbed.classList.add('active');
             ytEmbed.innerHTML = `
                 <iframe width="100%" height="100%" 
@@ -632,7 +644,7 @@
             `;
         }
 
-        function handleEnterYT(e) { if (e.key === 'Enter') searchYoutubeAPI(); }
+        function handleEnterYT(e) { if (e.key === 'Enter') handleYoutubeInput(); }
 
 
         /* --- 3. SPOTIFY EMBED LOGIC --- */
